@@ -1,7 +1,7 @@
-const Appointments = require("../models/appointments");
+const Expneses = require("../models/expense");
 
-exports.getAppointments = (req, res, next) => {
-  Appointments.fetchAll()
+exports.getExpenses = (req, res, next) => {
+  Expneses.fetchAll()
     .then(([rows, otherdata]) => {
       res.json(rows);
     })
@@ -11,22 +11,22 @@ exports.getAppointments = (req, res, next) => {
     });
 };
 
-exports.postAppointment = (req, res, next) => {
-  const data = new Appointments(
-    req.body.username,
-    req.body.email,
-    req.body.phone,
-    req.body.time
+exports.addExpense = (req, res, next) => {
+  const data = new Expneses(
+    req.body.id,
+    req.body.price,
+    req.body.description,
+    req.body.categary
   );
   data
     .save()
-    .then((rows) => {
+    .then((result) => {
+      console.log(result[0].insertId); // Access the insertId property
       res.json({
-        id: rows.insertId,
-        username: req.body.username,
-        email: req.body.email,
-        phone: req.body.phone,
-        time: req.body.time,
+        id: result[0].insertId,
+        price: req.body.price,
+        description: req.body.description,
+        categary: req.body.categary,
       });
     })
     .catch((err) => {
@@ -35,10 +35,10 @@ exports.postAppointment = (req, res, next) => {
     });
 };
 
-exports.deleteAppointment = (req, res, next) => {
+exports.deleteExpense = (req, res, next) => {
   const prodId = req.params.userId;
   console.log(prodId);
-  Appointments.deleteProduct(prodId)
+  Expneses.deleteProduct(prodId)
     .then((rows) => {
       console.log("sussfully deleted", rows);
       res.json({
